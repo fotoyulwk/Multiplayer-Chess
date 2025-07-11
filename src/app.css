@@ -1,3 +1,19 @@
+@import 'chessground/assets/chessground.base.css';
+@import 'chessground/assets/chessground.brown.css';
+@import 'chessground/assets/chessground.cburnett.css';
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+.cg-wrap {
+	box-sizing: border-box;
+}
+
+cg-container {
+	width: 100% !important;
+	height: 100% !important;
+}
+
+cg-board {
+	background-color: #dee3c3;
+}
