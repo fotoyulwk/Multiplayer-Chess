@@ -6,10 +6,16 @@
 	import { move, chess, getLegalDests, reset } from '$lib/chess/chessStore';
 	import { getBestMove } from '$lib/chess/stockfish';
 
-	let { playerColor = 'white' }: { playerColor?: 'white' | 'black' } = $props();
+	let { playerColor = 'white', orientation = 'white' }: { playerColor?: 'white' | 'black'; orientation?: 'white' | 'black' } = $props();
 
 	let container: HTMLDivElement;
 	let board: ReturnType<typeof Chessground>;
+
+	$effect(() => {
+		if (board) {
+			board.set({ orientation });
+		}
+	});
 
 	function updateBoard(lastMove?: { from: string; to: string }) {
 		const dests = getLegalDests(chess);
@@ -39,6 +45,7 @@
 
 		board = Chessground(container, {
 			fen: chess.fen(),
+			orientation,
 			movable: {
 				free: true,
 				color: initialTurn,
@@ -64,10 +71,19 @@
 			}
 		});
 
+		function onResize() {
+			board.redrawAll();
+		}
+		window.addEventListener('resize', onResize);
+
 		if (playerColor === 'black') {
 			setTimeout(() => makeAIMove(), 500);
 		}
+
+		return () => {
+			window.removeEventListener('resize', onResize);
+		};
 	});
 </script>
 
-<div class="h-[630px] w-[630px]" bind:this={container}></div>
+<div class="aspect-square w-full max-w-[min(90vw,90vh,630px)]" bind:this={container}></div>
