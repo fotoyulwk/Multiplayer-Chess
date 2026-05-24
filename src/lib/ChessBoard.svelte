@@ -6,16 +6,16 @@
 	import { move, chess, getLegalDests, reset } from '$lib/chess/chessStore';
 	import { getBestMove } from '$lib/chess/stockfish';
 
-	let { playerColor = 'white', orientation = 'white' }: { playerColor?: 'white' | 'black'; orientation?: 'white' | 'black' } = $props();
+	let { playerColor = 'white' }: { playerColor?: 'white' | 'black' } = $props();
 
 	let container: HTMLDivElement;
 	let board: ReturnType<typeof Chessground>;
+	let orientation: 'white' | 'black' = $state('white');
 
-	$effect(() => {
-		if (board) {
-			board.set({ orientation });
-		}
-	});
+	function flipBoard() {
+		orientation = orientation === 'white' ? 'black' : 'white';
+		board?.set({ orientation });
+	}
 
 	function updateBoard(lastMove?: { from: string; to: string }) {
 		const dests = getLegalDests(chess);
@@ -38,6 +38,14 @@
 		}
 	}
 
+	function tryMove(from: Key, to: Key) {
+		try {
+			return move(from, to);
+		} catch {
+			return null;
+		}
+	}
+
 	onMount(() => {
 		reset();
 
@@ -52,11 +60,9 @@
 				dests: getLegalDests(chess),
 				events: {
 					after: (from, to) => {
-						const m = move(from, to);
+						const m = tryMove(from, to);
 						if (!m) return;
-
 						updateBoard(m);
-
 						setTimeout(() => makeAIMove(), 300);
 					}
 				}
@@ -86,4 +92,12 @@
 	});
 </script>
 
-<div class="aspect-square w-full max-w-[min(90vw,90vh,630px)]" bind:this={container}></div>
+<div class="flex w-full flex-col items-center gap-3">
+	<div class="aspect-square w-full" bind:this={container}></div>
+	<button
+		class="cursor-pointer rounded-md bg-[#ffffff17] px-4 py-2 text-sm text-white/80 transition hover:bg-[#ffffff25] hover:text-white"
+		onclick={flipBoard}
+	>
+		Flip Board
+	</button>
+</div>
