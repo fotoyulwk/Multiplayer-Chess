@@ -1,5 +1,5 @@
 // src/lib/chess/stockfish.ts
-export async function getBestMove(fen: string, depth: string = '8') {
+export async function getBestMove(fen: string, depth: string = '18') {
 	const url = `https://stockfish.online/api/s/v2.php?fen=${fen}&depth=${depth}`;
 
 	const res = await fetch(url);
