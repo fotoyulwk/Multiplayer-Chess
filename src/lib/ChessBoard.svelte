@@ -3,7 +3,7 @@
 	import type { Key } from 'chessground/types';
 	import { onMount } from 'svelte';
 
-	import { move, chess, getLegalDests, reset } from '$lib/chess/chessStore';
+	import { move, undo, chess, getLegalDests, reset } from '$lib/chess/chessStore';
 	import { getBestMove } from '$lib/chess/stockfish';
 
 	let { playerColor = 'white' }: { playerColor?: 'white' | 'black' } = $props();
@@ -44,6 +44,19 @@
 		} catch {
 			return null;
 		}
+	}
+
+	function handleUndo() {
+		const len = chess.history().length;
+		if (len === 0) return;
+		const playerTurn = chess.turn() === (playerColor === 'white' ? 'w' : 'b');
+		if (playerTurn && len >= 2) {
+			undo();
+			undo();
+		} else {
+			undo();
+		}
+		updateBoard();
 	}
 
 	onMount(() => {
@@ -97,10 +110,18 @@
 
 <div class="flex w-full flex-col items-center gap-3">
 	<div class="aspect-square w-full" bind:this={container}></div>
-	<button
-		class="cursor-pointer rounded-md bg-[#ffffff17] px-4 py-2 text-sm text-white/80 transition hover:bg-[#ffffff25] hover:text-white"
-		onclick={flipBoard}
-	>
-		Flip Board
-	</button>
+	<div class="flex gap-2">
+		<button
+			class="cursor-pointer rounded-md bg-[#ffffff17] px-4 py-2 text-sm text-white/80 transition hover:bg-[#ffffff25] hover:text-white"
+			onclick={handleUndo}
+		>
+			Undo
+		</button>
+		<button
+			class="cursor-pointer rounded-md bg-[#ffffff17] px-4 py-2 text-sm text-white/80 transition hover:bg-[#ffffff25] hover:text-white"
+			onclick={flipBoard}
+		>
+			Flip Board
+		</button>
+	</div>
 </div>
