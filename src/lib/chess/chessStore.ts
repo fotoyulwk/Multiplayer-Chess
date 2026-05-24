@@ -30,3 +30,9 @@ export function undo() {
 	fen.set(chess.fen());
 	history.set(chess.history());
 }
+
+export function reset() {
+	chess.reset();
+	fen.set(chess.fen());
+	history.set(chess.history());
+}

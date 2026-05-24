@@ -3,8 +3,10 @@
 	import type { Key } from 'chessground/types';
 	import { onMount } from 'svelte';
 
-	import { history, move, undo, chess, getLegalDests } from '$lib/chess/chessStore';
+	import { move, chess, getLegalDests, reset } from '$lib/chess/chessStore';
 	import { getBestMove } from '$lib/chess/stockfish';
+
+	let { playerColor = 'white' }: { playerColor?: 'white' | 'black' } = $props();
 
 	let container: HTMLDivElement;
 	let board: ReturnType<typeof Chessground>;
@@ -31,18 +33,20 @@
 	}
 
 	onMount(() => {
+		reset();
+
+		const initialTurn = chess.turn() === 'w' ? 'white' : 'black';
+
 		board = Chessground(container, {
 			fen: chess.fen(),
 			movable: {
-				free: false,
-				color: 'white',
+				free: true,
+				color: initialTurn,
 				dests: getLegalDests(chess),
 				events: {
 					after: (from, to) => {
-						const m = chess.move({ from, to, promotion: 'q' });
+						const m = move(from, to);
 						if (!m) return;
-
-						history.set(chess.history());
 
 						updateBoard(m);
 
@@ -59,6 +63,10 @@
 				duration: 150
 			}
 		});
+
+		if (playerColor === 'black') {
+			setTimeout(() => makeAIMove(), 500);
+		}
 	});
 </script>
 
