@@ -26,7 +26,7 @@
 	});
 </script>
 
-<div class="flex w-full flex-col gap-2 rounded-md bg-[#ffffff17] p-3 text-sm sm:max-w-md lg:h-[calc(min(100vh-4rem,630px))] lg:w-64">
+<div class="flex w-full shrink-0 flex-col gap-2 rounded-md bg-[#ffffff17] p-3 text-sm lg:h-[630px] lg:w-56">
 	<div class="flex items-center justify-between">
 		<h2 class="text-xs font-semibold text-white/60 uppercase tracking-wider">Moves</h2>
 		<span class="rounded-full px-2 py-0.5 text-xs {chess.turn() === 'w' ? 'bg-white/20 text-white' : 'bg-black/30 text-white/80'}">
