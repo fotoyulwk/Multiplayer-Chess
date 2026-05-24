@@ -8,12 +8,11 @@ export const fen = writable<string>(chess.fen());
 export function getLegalDests(chess: Chess) {
 	const dests = new Map();
 	SQUARES.forEach((sq) => {
-		const moves = chess.moves({ square: sq, verbose: true });
-		if (moves.length)
-			dests.set(
-				sq,
-				moves.map((m) => m.to)
-			);
+		const piece = chess.get(sq);
+		if (piece && piece.color === chess.turn()) {
+			const moves = chess.moves({ square: sq, verbose: true });
+			dests.set(sq, moves.map((m) => m.to));
+		}
 	});
 	return dests;
 }

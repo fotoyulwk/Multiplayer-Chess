@@ -62,7 +62,7 @@
 					after: (from, to) => {
 						const m = tryMove(from, to);
 						if (!m) {
-							board.set({ fen: chess.fen() });
+							updateBoard();
 							return;
 						}
 						updateBoard(m);
