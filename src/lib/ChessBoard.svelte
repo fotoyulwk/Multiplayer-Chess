@@ -61,7 +61,10 @@
 				events: {
 					after: (from, to) => {
 						const m = tryMove(from, to);
-						if (!m) return;
+						if (!m) {
+							board.set({ fen: chess.fen() });
+							return;
+						}
 						updateBoard(m);
 						setTimeout(() => makeAIMove(), 300);
 					}
